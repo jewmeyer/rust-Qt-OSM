@@ -1,5 +1,5 @@
 [package]
-name = "qml-minimal-no-cmake"
+name = "rust-Qt-OSM"
 version = "0.1.0"
 edition = "2021"
 

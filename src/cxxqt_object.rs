@@ -1,28 +1,15 @@
-// SPDX-FileCopyrightText: 2022 Klarälvdalens Datakonsult AB, a KDAB Group company <info@kdab.com>
-// SPDX-FileContributor: Be Wilson <be.wilson@kdab.com>
-// SPDX-FileContributor: Andrew Hayzen <andrew.hayzen@kdab.com>
-// SPDX-FileContributor: Gerhard de Clercq <gerhard.declercq@kdab.com>
-//
-// SPDX-License-Identifier: MIT OR Apache-2.0
-
-// ANCHOR: book_cxx_qt_module
-// ANCHOR: book_bridge_macro
+// Derived from https://github.com/KDAB/cxx-qt/blob/main/examples/qml_minimal/rust/src/cxxqt_object.rs
 
 /// The bridge definition for our QObject
 #[cxx_qt::bridge]
 pub mod qobject {
-    // ANCHOR_END: book_bridge_macro
-
-    // ANCHOR: book_qstring_import
     unsafe extern "C++" {
         include!("cxx-qt-lib/qstring.h");
         /// An alias to the QString type
         type QString = cxx_qt_lib::QString;
     }
-    // ANCHOR_END: book_qstring_import
 
     extern "RustQt" {
-        // ANCHOR: book_rustobj_struct_signature
         // The QObject definition
         // We tell CXX-Qt that we want a QObject class with the name MyObject
         // based on the Rust struct MyObjectRust.
@@ -32,9 +19,7 @@ pub mod qobject {
         #[qproperty(QString, string)]
         #[namespace = "my_object"]
         type MyObject = super::MyObjectRust;
-        // ANCHOR_END: book_rustobj_struct_signature
 
-        // ANCHOR: book_rustobj_invokable_signature
         // Declare the invokable methods we want to expose on the QObject
         #[qinvokable]
         #[cxx_name = "incrementNumber"]
@@ -43,25 +28,23 @@ pub mod qobject {
         #[qinvokable]
         #[cxx_name = "sayHi"]
         fn say_hi(self: &MyObject, string: &QString, number: i32);
-        // ANCHOR_END: book_rustobj_invokable_signature
+
+        #[qinvokable]
+        #[cxx_name = "clickedInMap"]
+        fn clicked_in_map(self: &MyObject, longitude: f32, latitude: f32);
     }
 }
 
-// ANCHOR: book_use
 use core::pin::Pin;
 use cxx_qt_lib::QString;
-// ANCHOR_END: book_use
 
 /// The Rust struct for the QObject
-// ANCHOR: book_rustobj_struct
 #[derive(Default)]
 pub struct MyObjectRust {
     number: i32,
     string: QString,
 }
-// ANCHOR_END: book_rustobj_struct
 
-// ANCHOR: book_rustobj_invokable_impl
 impl qobject::MyObject {
     /// Increment the number Q_PROPERTY
     pub fn increment_number(self: Pin<&mut Self>) {
@@ -73,8 +56,9 @@ impl qobject::MyObject {
     pub fn say_hi(&self, string: &QString, number: i32) {
         println!("Hi from Rust! String is '{string}' and number is {number}");
     }
+
+    /// React to mouse click in map
+    pub fn clicked_in_map(&self, longitude: f32, latitude: f32) {
+        println!("Mouse click in map: longitude is {longitude}, latitude is {latitude}");
+    }
 }
-
-// ANCHOR_END: book_rustobj_invokable_impl
-
-// ANCHOR_END: book_cxx_qt_module

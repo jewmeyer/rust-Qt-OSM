@@ -27,7 +27,7 @@ fn main() {
         engine
             .as_qqmlengine()
             .on_quit(|_| {
-                println!("QML Quit!");
+                println!("QML Quit.");
             })
             .release();
     }

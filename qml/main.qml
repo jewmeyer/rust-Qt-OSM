@@ -6,11 +6,11 @@ import QtPositioning
 
 // This must match the uri and version
 // specified in the qml_module in the build.rs script.
-import com.kdab.cxx_qt.demo 1.0
+import rust_Qt_OSM 1.0
 
 ApplicationWindow {
     height: 900
-    title: qsTr("Hello World")
+    title: qsTr("Rust-Qt-OSM")
     visible: true
     width: 1200
     color: palette.window
@@ -93,9 +93,9 @@ ApplicationWindow {
                 // workaround for QTBUG-87646 / QTBUG-112394 / QTBUG-112432:
                 // Magic Mouse pretends to be a trackpad but doesn't work with PinchHandler
                 // and we don't yet distinguish mice and trackpads on Wayland either
-                // acceptedDevices: Qt.platform.pluginName === "cocoa" || Qt.platform.pluginName === "wayland"
-                //         ? PointerDevice.Mouse | PointerDevice.TouchPad
-                //         : PointerDevice.Mouse
+                acceptedDevices: Qt.platform.pluginName === "cocoa" || Qt.platform.pluginName === "wayland"
+                        ? PointerDevice.Mouse | PointerDevice.TouchPad
+                        : PointerDevice.Mouse
                 rotationScale: 1/120
                 property: "zoomLevel"
             }
@@ -113,6 +113,17 @@ ApplicationWindow {
                 enabled: map.zoomLevel > map.minimumZoomLevel
                 sequence: StandardKey.ZoomOut
                 onActivated: map.zoomLevel = Math.round(map.zoomLevel - 1)
+            }
+
+            MouseArea {
+                id: mapMouseArea
+                anchors.fill: parent
+                property geoCoordinate clickCoord
+                onClicked: {
+                    // myObject.clickedInMap(mapMouseArea.mouseX, mapMouseArea.mouseY)
+                    mapMouseArea.clickCoord = map.toCoordinate(Qt.point(mapMouseArea.mouseX, mapMouseArea.mouseY), false)
+                    myObject.clickedInMap(mapMouseArea.clickCoord.latitude, mapMouseArea.clickCoord.longitude)
+                }
             }
         }
     }

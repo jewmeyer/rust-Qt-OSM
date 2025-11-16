@@ -4,7 +4,7 @@ fn main() {
     CxxQtBuilder::new()
         .qt_module("Network")
         .qml_module(QmlModule {
-            uri: "com.kdab.cxx_qt.demo",
+            uri: "rust_Qt_OSM",
             rust_files: &["src/cxxqt_object.rs"],
             qml_files: &["qml/main.qml"],
             ..Default::default()
