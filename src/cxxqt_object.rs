@@ -32,6 +32,10 @@ pub mod qobject {
         #[qinvokable]
         #[cxx_name = "clickedInMap"]
         fn clicked_in_map(self: &MyObject, longitude: f32, latitude: f32);
+
+        #[qinvokable]
+        #[cxx_name = "onZoomLevelChanged"]
+        fn on_zoom_level_changed(self: &MyObject, zoom_level: f32);
     }
 }
 
@@ -60,5 +64,10 @@ impl qobject::MyObject {
     /// React to mouse click in map
     pub fn clicked_in_map(&self, longitude: f32, latitude: f32) {
         println!("Mouse click in map: longitude is {longitude}, latitude is {latitude}");
+    }
+
+    /// React to change of zoom level via mouse wheel or keyboard shortcuts
+    pub fn on_zoom_level_changed(&self, zoom_level: f32) {
+        println!("Zoom level changed to {zoom_level}");
     }
 }

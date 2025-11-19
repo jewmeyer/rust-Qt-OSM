@@ -125,6 +125,10 @@ ApplicationWindow {
                     myObject.clickedInMap(mapMouseArea.clickCoord.latitude, mapMouseArea.clickCoord.longitude)
                 }
             }
+
+            onZoomLevelChanged: {
+                    myObject.onZoomLevelChanged(map.zoomLevel)
+            }
         }
     }
 
